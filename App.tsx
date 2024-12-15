@@ -30,6 +30,10 @@ import ScanQRPage from './src/pages/home';
 import LoginScreen from './src/pages/login';
 import StudentList from './src/pages/list';
 
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
