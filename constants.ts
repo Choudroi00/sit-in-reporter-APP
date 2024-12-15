@@ -1,8 +1,8 @@
 import { Dimensions } from "react-native"
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export const primaryColor = '#171834'
-export const accentColor = '#7E60BF'
+export const primaryColor = '#151515'  
+export const accentColor = '#F5F5F5'
 
 
 

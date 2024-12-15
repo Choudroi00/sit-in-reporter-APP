@@ -1,36 +1,71 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Dimensions,
+  Pressable,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import QRScanner from "../components/qrScanner";
+import XButton from "../components/XButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 const dWidth = Dimensions.get("window").width;
 
 const clr1 = "mediumseagreen";
 
 const ScanQRPage = () => {
   const [showQR, setShowQR] = useState(false);
-  const [qrCode, setQrCode] = useState("");
+  const [qrCode, setQrCode] = useState<Student | null>();
+  
+  const navigator = useNavigation();
+
+  type Student = {
+    uid: string;
+    first_name: string;
+    last_name: string;
+  }
 
   const openQRscanner = () => {
     setShowQR(true);
   };
 
-  const onQrRead = (qrtext: string) => {
-    setQrCode(qrtext);
+  useEffect(() => {
+    if(!qrCode) return;
+
+    setTimeout(() => {
+      setQrCode(null);  
+    }, 10000);
+
+
+  }, [qrCode]);
+
+  const onQrRead = async (qrtext: string) => {
+    const student: Student = JSON.parse(qrtext);
+    const storedStudents = JSON.parse(await AsyncStorage.getItem("students") ?? '') as Array<Student> || [];
+    storedStudents.push(student);
+    await AsyncStorage.setItem("students", JSON.stringify(storedStudents));
+    setQrCode(student);
     setShowQR(false);
   };
 
   return (
     <View style={styles.page}>
       {qrCode ? (
-        <Text style={{ fontSize: 16, color: "black" }}>
-          {"QR Value \n" + qrCode}
-        </Text>
+        <View>
+            <Text style={{ fontSize: 16, color: "black", marginBottom: 10 }}>
+                Student Details
+            </Text>
+            <Text style={{ fontSize: 14, color: "black" }}>
+                Nom Complet : {qrCode.first_name} {qrCode.last_name}  
+            </Text>
+            <Text style={{ fontSize: 13, color: "black" }}>
+                UID : {qrCode.uid}
+            </Text>
+            
+        </View>
       ) : null}
       <Ionicons
         name={"scan-circle-outline"}
@@ -40,6 +75,11 @@ const ScanQRPage = () => {
       <TouchableOpacity onPress={() => openQRscanner()} style={styles.btn}>
         <Text style={{ color: clr1 }}>Scan QR</Text>
       </TouchableOpacity>
+      <XButton text="Show list" onClick={()=>{
+        navigator.navigate('list');
+      }} >
+
+      </XButton>
       {showQR ? <QRScanner onRead={onQrRead} /> : null}
     </View>
   );
