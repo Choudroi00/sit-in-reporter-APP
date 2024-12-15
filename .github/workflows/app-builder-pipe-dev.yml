@@ -1,0 +1,77 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' 
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Android APK
+        run: |
+          cd android && chmod +x ./gradlew && ./gradlew assembleRelease
+
+      - name: Publish App To Server
+        env:
+          DEPLOY_KEY:  ${{ secrets.DEPLOY_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          DEPLOY_DIR:  ${{ secrets.DEPLOY_DIR }}
+        run: |
+          echo "${DEPLOY_KEY}" > deploy_key
+          
+          chmod 600 deploy_key
+          
+          scp -i deploy_key -o StrictHostKeyChecking=no -P 65002 android/app/build/outputs/apk/release/app-release.apk $SERVER_USER@$SERVER_HOST:${DEPLOY_DIR}_tmp/
+          
+          ssh -i deploy_key -o StrictHostKeyChecking=no -p 65002 $SERVER_USER@$SERVER_HOST << EOF
+          
+            cd ${DEPLOY_DIR}
+            
+            rm -rf app-release.apk 
+            
+            mv ${DEPLOY_DIR}_tmp/app-release.apk ./app-release.apk
+            
+            rm -rf ${DEPLOY_DIR}_tmp/app-release.apk
+            
+          EOF
+
+        
+          rm deploy_key
+
+
+      - name: Upload APK as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
