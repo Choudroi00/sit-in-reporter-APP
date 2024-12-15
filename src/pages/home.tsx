@@ -42,6 +42,14 @@ const ScanQRPage = () => {
 
   }, [qrCode]);
 
+  useEffect(() => {
+    navigator.addListener('beforeRemove',(e) => {e.preventDefault();});
+  
+    return () => {
+      
+    }
+  }, [navigator])
+
   const onQrRead = async (qrtext: string) => {
     const student: Student = JSON.parse(qrtext);
     const storedStudents = JSON.parse(await AsyncStorage.getItem("students") ?? '') as Array<Student> || [];

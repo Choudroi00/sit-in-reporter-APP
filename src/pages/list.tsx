@@ -31,17 +31,19 @@ const StudentList: React.FC = () => {
 
     const submitStudents = async () => {
         setIsSubmitting(true);
+
+        let updatedStudents = students.slice();
         for (const student of students) {
             try {
                 const resp = await axiosClient.get(`pub/sit-in/quick-commit?uid=${student.uid} `)
                 if (resp.status === 200 && resp.data.message === 'Success') {
-                    const updatedStudents = students.filter((s) => s.uid !== student.uid);
-                    await AsyncStorage.setItem('students', JSON.stringify(updatedStudents));
+                    updatedStudents = updatedStudents.filter((s) => s.uid !== student.uid);
                 }
             } catch (error) {
-
+                
             }
         }
+        await AsyncStorage.setItem('students', JSON.stringify(updatedStudents));
         setIsSubmitting(false);
     };
 
