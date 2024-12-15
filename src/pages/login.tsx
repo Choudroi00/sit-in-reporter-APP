@@ -11,6 +11,9 @@ import XModal from '../components/XModel';
 import { storeData } from '../helpers/utils';
 import axiosClient from '../api';
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 
 
@@ -77,8 +80,9 @@ const LoginScreen = () => {
       storeData('isAuthenticated', 'true');
       storeData('user', JSON.stringify({email: email, password: password, token : token}));
       storeData('token', token);
+      console.log(token, "tok")
 
-      setSnbar(true);
+      setSnbar(true);storeData
 
       setTimeout(() => {
         navigator.navigate('home');
@@ -91,6 +95,19 @@ const LoginScreen = () => {
     }
 
   }, [authStatus]);
+  
+  useEffect(()=>{
+    const dos = async () =>{
+      const tok = await AsyncStorage.getItem('token');
+      if(tok){
+        navigator.navigate('home');
+      }
+    }
+    
+    dos()
+  }, [navigator])
+  
+  
   const handleLogin = async () => {
 
     const resp = await axiosClient.post('/login', { email, password })

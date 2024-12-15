@@ -32,14 +32,16 @@ const StudentList: React.FC = () => {
     const submitStudents = async () => {
         setIsSubmitting(true);
         for (const student of students) {
+          console.log(student)
             try {
                 const resp = await axiosClient.get(`pub/sit-in/quick-commit?uid=${student.uid} `)
+                console.log(resp.data)
                 if (resp.status === 200 && resp.data.message === 'Success') {
                     const updatedStudents = students.filter((s) => s.uid !== student.uid);
                     await AsyncStorage.setItem('students', JSON.stringify(updatedStudents));
                 }
             } catch (error) {
-
+              console.log(error)
             }
         }
         setIsSubmitting(false);
@@ -63,23 +65,12 @@ const StudentList: React.FC = () => {
                 </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                    AsyncStorage.setItem('students', JSON.stringify([]));
-                    setStudents([]);
-                }}
-                disabled={isSubmitting}
-            >
-                <Text style={styles.buttonText}>
-                    Clear Students
-                </Text>
-            </TouchableOpacity>
+            
 
             <FlatList
                 data={students}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.uid}
+                keyExtractor={(item, index) => item.uid + index}
             />
 
             <TouchableOpacity

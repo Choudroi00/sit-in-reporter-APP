@@ -7,8 +7,8 @@
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useEffect }  from 'react';
+import type { PropsWithChildren } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -72,6 +72,18 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  
+  useEffect(()=>{
+  const dos = async ()=>{
+    const s = await AsyncStorage.getItem("students");
+    if(!s){
+      await AsyncStorage.setItem("students", JSON.stringfy([]))
+      
+    }
+  }
+  
+ dos()
+  }, [])
 
   return (
     <NavigationContainer>
