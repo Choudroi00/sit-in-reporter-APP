@@ -36,7 +36,7 @@ const QRScanner : React.FC<{onRead: (txt: string) => any}> = (props) => {
 
     //if it is idle for 15 secs, it will be closed
     setTimeout(() => {
-      props.onRead(null);
+      props.onRead('');
     }, 15 * 1000);
   }, []);
 
@@ -62,7 +62,7 @@ const QRScanner : React.FC<{onRead: (txt: string) => any}> = (props) => {
         <TouchableOpacity
           style={{ padding: 10 }}
           onPress={() => {
-            props.onRead(null);
+            props.onRead('');
           }}
         >
           <Ionicons name={"arrow-back-outline"} size={25} color={"snow"} />
@@ -79,7 +79,7 @@ const QRScanner : React.FC<{onRead: (txt: string) => any}> = (props) => {
             alignItems: "center",
           }}
           onPress={() => {
-            props.onRead(null);
+            props.onRead('');
           }}
         >
           <Text style={{ color: "snow", fontSize: 14 }}>Close</Text>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "absolute",
     top: 0,
-    width: 0,
+    left: 0,
     height: "100%",
     width: "100%",
     alignItems: "center",

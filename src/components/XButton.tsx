@@ -3,6 +3,7 @@ import { Pressable, PressableProps, StyleProp, Text, ViewStyle } from 'react-nat
 import tw, { Style, style } from 'twrnc'
 import { accentColor, primaryColor } from '../../constants';
 
+
 export interface XButtonProps {
     onClick: () => void;
     size?: number;

@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import QRScanner from "./qrScanner";
+import QRScanner from "../components/qrScanner";
 const dWidth = Dimensions.get("window").width;
 
 const clr1 = "mediumseagreen";
