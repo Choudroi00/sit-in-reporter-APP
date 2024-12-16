@@ -52,11 +52,15 @@ const ScanQRPage = () => {
 
   const onQrRead = async (qrtext: string) => {
     const student: Student = JSON.parse(qrtext);
-    const storedStudents = JSON.parse(await AsyncStorage.getItem("students") ?? '') as Array<Student> || [];
+    const st = await AsyncStorage.getItem("students")
+    console.log('0000', st)
+    const storedStudents = st ? JSON.parse(st) : [];
+    console.log('rccccc');
     storedStudents.push(student);
     await AsyncStorage.setItem("students", JSON.stringify(storedStudents));
     setQrCode(student);
     setShowQR(false);
+    console.log('readed', qrtext);
   };
 
   return (

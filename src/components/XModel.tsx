@@ -1,10 +1,10 @@
 import React, { Children, useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Modal, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
+import { Text, View, StyleSheet, Modal, TouchableWithoutFeedback , Animated} from 'react-native';
 
 import tw from 'twrnc';
 import { accentColor, primaryColor } from '../../constants';
 import XButton from './XButton';
-import { useSharedValue, withTiming, useAnimatedStyle, interpolate, runOnJS } from 'react-native-reanimated';
+import { useSharedValue, withTiming, useAnimatedStyle, interpolate, runOnJS, Easing } from 'react-native-reanimated';
 
 
 export interface XModalProps {
